@@ -1,1 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    h3{
+      font-size: 12px;
+      background-color: lightgray;
+      padding: 10px;
+    }
+    table,th,td{
+      border: 1px solid gray;
+    }
+  </style>
+  <script src="heng-node.js" ></script>
+  <script src="heng.js" ></script>
+</head>
+<body>
+  <div id="container"></div>
+</body>
+<script>
 
+  //从Heng.tags中解构出标签函数，任何标准标签和自定义标签都能够解构出来
+  const { div, h3, ul, li, label, table, thead, tbody, tr, th, td } = Heng.tags;  
+  
+  //准备一份要用的数据
+  let myFamily = [
+    {id:1,name:"张向明"},
+    {id:2,name:"将海艳"},
+    {id:3,name:"张泽珩"}
+  ];
+
+  //准备一个无参组件，所谓组件就是一个能返回HengNode的函数
+  function COMPONENT(){
+    let hengNode = div(
+      label("1"),
+      label("2")
+    );
+    return hengNode;
+  }
+
+  //准备一个有参组件
+  function MY_FAMILY(member){
+    let hengNode = 
+    table(
+      thead(
+        tr(th("编号"),th("姓名"))
+      ),
+      tbody(
+        member.map(row=>
+          tr(td(row.id),td(row.name))._id(row.id)
+        )
+      )
+    );
+    return hengNode;
+  }
+
+  //开始构建
+  let hengNode = 
+  div(
+
+    h3("静态构建一个ul"),
+    ul(
+      li("1"),
+      li("2"),
+    ),
+
+    h3("动态构建一个table"),
+    table(
+      thead(
+        tr(th("编号"),th("姓名"))
+      ),
+      tbody(
+        myFamily.map(row=>
+          tr(td(row.id),td(row.name))
+        )
+      )
+    ),
+
+    h3("插入一个无参函数组件,使用组件名即可，无需括号调用"),
+    COMPONENT,
+
+    h3("插入一个有参函数组件,需要传入参数"),
+    MY_FAMILY(myFamily),
+
+    h3("配置属性、样式和事件"),
+    ul(
+      {id:"ul1",class:"class1 class2"},
+      {style:{color:"red"}},
+      {click:event=>console.log(event)},
+      li(1),
+      li(2),
+      li(3)
+    ),
+
+    h3("用正则表达式+选择器配置id和class"),
+    ul(
+      /#ul2.class3.class4/g,
+      li(1),
+      li(2),
+      li(3)
+    ),
+
+    h3("链式配置属性、样式和事件"),
+    ul(
+      li("样式配置函数用小驼峰命名").color("red").backgroundColor("lightgray"),
+      li("属性配置函数用下划线开始")._id("aaa")._class("bbb"),
+      li("事件配置函数首字母大写")
+        .Click(event=>console.log("单击"))
+        .DblClick(event=>console.log("双击"))
+    ),
+    
+    h3("将节点导出到一个变量中"),
+    div("这是一个导出的节点，其存放在window.myDiv上")._id("myDiv",window)
+
+  );
+
+  //导出的节点可以链式调用
+  myDiv
+    ._class("class5 class6")  //属性配置函数用下划线开始
+    .color("red").fontSize(15)  //样式配置函数用小驼峰命名
+    .Click(event=>console.log(event));  //事件配置函数首字母大写
+  
+  //将构建完的HengNode挂载到DOM树上
+  Heng.render(hengNode,document.querySelector("#container"));
+
+  //挂载完成后，可通过real属性访问HengNode的真实节点
+  console.log("myDiv的真实节点",myDiv.real);
+
+  //挂载完成后，改变HengNode的属性、样式、事件，真实节点会自动更新
+  myDiv.color("green");
+
+  //真实节点可以通过$$属性组装到HengNode中，方便链式调用
+  document.querySelector("#container").$$.fontSize(14)._class("container");
+
+</script>
+</html>
