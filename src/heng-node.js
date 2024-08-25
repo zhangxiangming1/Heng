@@ -394,5 +394,6 @@ function $$(elementOrSelector, host = document) {
   }
 }
 
-export { HengNode };
-export {$$};
+//工程化环境下，请打开以下两行注释
+//export { HengNode };
+//export {$$};
