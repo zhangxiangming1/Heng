@@ -1,4 +1,5 @@
-import {HengNode } from "./heng-node";
+//工参化环境下，请打开以下一行注释
+//import {HengNode } from "./heng-node";
 
 /**
  * html语义化构造器(Heng读"珩")
@@ -199,4 +200,5 @@ const Heng = {
 
 }
 
-export {Heng};
+//工参化环境下，请打开以下一行注释
+//export {Heng};
